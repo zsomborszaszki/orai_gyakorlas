@@ -121,9 +121,60 @@ app.get("/varosok/:id/szallasok" , async (req,res) => {
 
 })
 
+app.get("/orszagok", async (req,res) => {
+
+    let sql = 'SELECT orszag, COUNT(varosok.nev) AS varosDb, COUNT(szallasok.nev) AS szallasDb, AVG(szallasok.ertekeles) AS atlagErtekeles FROM varosok LEFT JOIN szallasok ON varosok.id = szallasok.varos_id GROUP BY orszag';
+
+    let [eredmeny] = await pool.query(sql);
+
+    res.send(eredmeny);
+})
+
+app.get("/ajanlat", async (req,res) => {
 
 
+    let {varos,ej,fo} = req.query;
 
+    ej = Number(ej);
+    fo = Number(fo);
+
+    if(req.query.varos == null || req.query.ej == null || req.query.fo == null)
+    {
+        return res.status(400).json({error:' Meg kell adni a várost, az éjszakát, és a fő-t is.'});
+    }
+
+    if(req.query.fo < 1 || req.query.ej < 1)
+    {
+        return res.status(400).json({error:'Minimum egy éjszakát kell foglalni, minimum 1 főre.'});
+    }
+
+    let sql = 'SELECT varosok.nev FROM varosok WHERE varosok.nev = ?';
+    let [eredmeny] = await pool.query(sql, req.query.varos);
+
+    if(eredmeny.length == 0)
+    {
+        return res.status(404).json({error:'Nem található város.'});
+    }
+
+    sql = 'SELECT szallasok.nev AS szallas, szallasok.csillag, szallasok.ar AS arFoEj, szallasok.ar * ? * ? AS osszesen FROM varosok JOIN szallasok ON varosok.id = szallasok.varos_id WHERE varosok.nev = ? ORDER BY szallasok.ar ASC';
+
+    [eredmeny] = await pool.query(sql,[ej,fo,varos]);
+
+    res.send(eredmeny);
+})
+
+
+app.get("/legjobb/:num", async (req,res) => {
+
+    const num = Number(req.params.num);
+
+    let sql = 'SELECT szallasok.id, varosok.nev AS varos, szallasok.nev, varosok.orszag, csillag, ar, medence, ertekeles FROM szallasok LEFT JOIN varosok ON szallasok.varos_id = varosok.id ORDER BY ertekeles LIMIT ?';
+
+    let [eredmeny] = await pool.query(sql, num);
+
+    res.send(eredmeny);
+
+})
 
 app.listen(3000, ()=> {
     console.log('Server listens on http://localhost:3000 ');
