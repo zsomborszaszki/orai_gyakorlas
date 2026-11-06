@@ -3,7 +3,7 @@ import mysql2 from 'mysql2/promise';
 const dbConfig = {
     host:'localhost',
     user:'root',
-    password:'root',
+    password:'',
     database:'jaratok',
     port:'3307'
 }
