@@ -5,7 +5,7 @@ const dbConfig = {
     user:'root',
     password:'',
     database:'jaratok',
-    port:'3306'
+    port:'3307'
 }
 
 const pool = mysql2.createPool(dbConfig);
