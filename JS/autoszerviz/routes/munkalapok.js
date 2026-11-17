@@ -113,7 +113,9 @@ END AS alkatreszek,
     WHERE f.munkalap_id = munkalapok.id)) alkatreszDij, ROUND(((12000*munkalapok.munkaora)+(SELECT COALESCE(SUM(f.db * a.ar), 0) 
         FROM felhasznalasok f JOIN alkatreszek a ON a.id = f.alkatresz_id 
         WHERE f.munkalap_id = munkalapok.id))) vegosszeg FROM munkalapok JOIN ugyfelek ON munkalapok.ugyfel_id = ugyfelek.id
-        LEFT JOIN felhasznalasok ON felhasznalasok.munkalap_id = munkalapok.id LEFT JOIN alkatreszek ON alkatreszek.id = felhasznalasok.alkatresz_id WHERE munkalapok.id=?`;
+        LEFT JOIN felhasznalasok ON felhasznalasok.munkalap_id = munkalapok.id LEFT JOIN alkatreszek ON alkatreszek.id = felhasznalasok.alkatresz_id WHERE munkalapok.id=? 
+        GROUP BY munkalapok.id, munkalapok.rendszam, munkalapok.felvetel,
+    munkalapok.leiras, munkalapok.statusz`;
 
     [eredmeny] = await pool.query(sql,id);
 

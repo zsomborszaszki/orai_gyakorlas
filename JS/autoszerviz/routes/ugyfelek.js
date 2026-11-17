@@ -12,7 +12,7 @@ router.get('', async (req,res) => {
     (12000*munkalapok.munkaora)+(SELECT COALESCE(SUM(f.db * a.ar), 0) 
         FROM felhasznalasok f JOIN alkatreszek a ON a.id = f.alkatresz_id 
         WHERE f.munkalap_id = munkalapok.id))),0) osszKoltes FROM ugyfelek u LEFT JOIN munkalapok ON u.id = munkalapok.ugyfel_id 
-        GROUP BY u.id ORDER BY osszKoltes DESC`;
+        GROUP BY u.id, u.nev, u.telefon ORDER BY osszKoltes DESC`;
 
     let [eredmeny] = await pool.query(sql);
 

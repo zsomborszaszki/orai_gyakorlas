@@ -12,7 +12,13 @@ router.get('/statuszok', async (req,res) => {
 
     let [eredmeny] = await pool.query(sql);
 
-    return res.status(200).json(eredmeny);
+    const statusz = eredmeny.map(sor => ({
+    ...sor,
+    db: Number(sor.db)
+    }));
+
+
+    return res.status(200).json(statusz);
 
 })
 
