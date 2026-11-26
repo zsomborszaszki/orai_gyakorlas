@@ -15,7 +15,6 @@ export default function TermekKartya({termek, nev, ar, akcio, keszlet, ertekeles
             ? <h5>Elfogyott</h5>
             :  keszlet<5 ? <h5 style={{color:"orange"}}>Utolsó {keszlet}db</h5> : <h5 style={{color:"green"}}>Raktáron</h5>
             }
-            <h5>Készlet: {keszlet}db</h5>
             <p>
             {'★'.repeat(Math.round(ertekeles))}
             {'☆'.repeat(5 - Math.round(ertekeles))}
@@ -25,7 +24,7 @@ export default function TermekKartya({termek, nev, ar, akcio, keszlet, ertekeles
         </>
         )
     }
-
+----------------
     if(akcio===0)
     {
         return(
